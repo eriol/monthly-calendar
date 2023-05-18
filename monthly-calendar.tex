@@ -1,0 +1,71 @@
+% arara: lualatex
+% arara: clean: { extensions: [ aux, idx, ilg, ind, log, out, toc ] }
+
+% Copyright © 2023 Daniele Tricoli <eriol@mornie.org>
+% SPDX-License-Identifier: BSD-3-Clause
+
+\documentclass[a4paper]{article}
+
+\usepackage{fontspec}
+\usepackage{polyglossia}
+\usepackage{microtype}
+\usepackage{nopageno}
+\usepackage[margin=15mm]{geometry}
+\usepackage{luacode}
+\usepackage{tikz}
+\usetikzlibrary{calendar,fit}
+
+\newlength{\cellheight}
+\setlength{\cellheight}{2cm}
+\newlength{\cellwidth}
+\setlength{\cellwidth}{2cm}
+
+\setmainfont{Erewhon}
+
+\begin{document}
+
+\begin{luacode*}
+    -- Remove spaces and newlines at the beginning and end of the string.
+    function trim(s)
+        return s:gsub("^%s*(.-)%s*$", "%1")
+    end
+
+    function get_data(path)
+        local f = assert(io.open(path, "r"))
+        local data = assert(f:read("*a"))
+        f:close()
+        data = trim(data)
+        return data
+    end
+
+    data = get_data("data.txt")
+    title, date = string.match(data, "(.*)\n+(.*)")
+    title = trim(title)
+\end{luacode*}
+
+\begin{center}
+    {\Large \directlua{tex.print(title)}}
+\end{center}
+
+\begin{figure}[!h]
+    \centering
+    \begin{tikzpicture}
+        \calendar[
+            dates=\directlua{tex.print(date)}-01 to \directlua{tex.print(date)}-last,
+            week list,
+            day xshift = \cellwidth + 4mm,
+            day yshift = \cellheight + 4mm,
+            day code={
+                \node (upper left) at (-\cellwidth,\cellheight) [below right]{\tikzdaytext};
+                \node (lower left) at (-\cellwidth,0) {};
+                \node (lower right) at (0,0) [above left]{ };
+                \node[
+                    draw,
+                    fit=(lower right) (upper left) (lower left),
+                    inner sep=1mm
+                ]{};
+            },
+        ];
+    \end{tikzpicture}
+\end{figure}
+\end{document}
