@@ -34,5 +34,5 @@ That nasty thing I want make in May 2023
 you will get:
 
 ![Screenshot of the generated calendar using the data file above: title is
-on top, days are surrounded by black squares](screenshot.png)
+on top, days are surrounded by black squares.](screenshot.png)
 
