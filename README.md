@@ -25,7 +25,7 @@ You also need `arara` if you want to use the `Makefile`.
 
 ## Example
 
-With `date.txt` with the following:
+With `data.txt` with the following:
 ```
 That nasty thing I want make in May 2023
 
